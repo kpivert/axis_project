@@ -21,6 +21,7 @@ function App() {
   const gdpRange = d3.extent(data.map((d, i) => d.gdpPercap));
   const lifeExpRange = d3.extent(data.map((d, i) => d.lifeExp));
   const popRange = d3.extent(data.map((d, i) => d.pop));
+  // const continents = data.map((d) => d.continent);
   const BUBBLE_MIN_SIZE = 4;
   const BUBBLE_MAX_SIZE = 25;
   const pixelsPerTick = 60;
@@ -39,8 +40,15 @@ function App() {
     .domain([popRange[0], popRange[1]])
     .range([BUBBLE_MIN_SIZE, BUBBLE_MAX_SIZE]);
 
+  const colorScale = d3
+    .scaleOrdinal()
+    .domain(data.map((d) => d.continent))
+    .range(d3.schemeCategory10);
+
   // console.log(Object.entries(data).slice(0, 10)); This is how you get first 10 rows. NB: Non inclusive
-  console.log(data);
+  // const unique = [...new Set(data.map((d) => d.continent))]; This is how you get unique values
+  const uniqueCountries = [...new Set(data.map((d) => d.country))];
+  console.log(uniqueCountries);
 
   return (
     <>
@@ -50,12 +58,12 @@ function App() {
         height={HEIGHT}
         // style={{ overflow: "visible" }}
       >
-        <rect width="100%" height="100%" fill="#00468b" opacity={0.2}></rect>
+        <rect width="100%" height="100%" fill="#cccccc" opacity={0.2} />
         <g
           width={boundsWidth}
           height={boundsHeight}
           transform={`translate(${MARGIN.left}, ${MARGIN.top})`}>
-          <rect width="100%" height="100%" fill="#ff0000" opacity={0.1}></rect>
+          <rect width="100%" height="100%" fill="#00468b" opacity={0.1}></rect>
           <g transform={`translate(0, ${boundsHeight})`}>
             {/* Bottom Axis*/}
             <AxisBottom
@@ -76,6 +84,7 @@ function App() {
             xScale={xScale}
             yScale={yScale}
             radiusScale={radiusScale}
+            colorScale={colorScale}
           />
         </g>
       </svg>
